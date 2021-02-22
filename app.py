@@ -3,7 +3,7 @@ from datetime import date
 
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
-from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QInputDialog
 from Souvenir import Collectible
 
 
@@ -21,8 +21,9 @@ class AppWindow(QMainWindow):
     def build_ui(self):
         self.ui.lbl_datenow.setText(QDate.currentDate().toString('dd/MM/yyyy'))
         self.ui.date_dateman.setDate(QDate.currentDate())
-        self.ui.cmb_type.addItems(["All", "Computer", "Mobile"])
-        self.ui.cmb_typedisplay.addItems(["All", "Computer", "Mobile"])
+        Collectible.populate_type()
+        self.ui.cmb_type.addItems(Collectible.TYPE_LIST)
+        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST)
 
         self.ui.tbl_show.setColumnCount(5)
         self.ui.tbl_show.setHorizontalHeaderLabels(("Sr. No.", "Name", "Manufactured Date", "Added On", "Description"))
@@ -30,6 +31,8 @@ class AppWindow(QMainWindow):
 
         self.ui.btn_clear.clicked.connect(self.clear_form)
         self.ui.btn_add.clicked.connect(self.add_collectible)
+        self.ui.btn_delete.clicked.connect(self.delete_collectible)
+        self.ui.btn_newtype.clicked.connect(self.show_new_type_dialog)
 
     def clear_form(self):
         self.ui.txt_name.clear()
@@ -44,10 +47,10 @@ class AppWindow(QMainWindow):
         description = self.ui.txt_desc.toPlainText()
 
         Collectible(name, c_type, date_manufactured, date_added, description)
-        self.load_collectible()
+        self.load_collectibles()
+        self.clear_form()
 
-    def load_collectible(self):
-
+    def load_collectibles(self):
         for i in reversed(range(self.ui.tbl_show.rowCount())):
             self.ui.tbl_show.removeRow(i)
 
@@ -57,8 +60,19 @@ class AppWindow(QMainWindow):
             self.ui.tbl_show.setItem(row_pos, 1, QTableWidgetItem(c.name))
             row_pos += 1
 
+    def delete_collectible(self):
+        rows = sorted(set(index.row() for index in self.ui.tbl_show.selectedIndexes()))
 
+        for row in rows:
+            Collectible.COLLECTIBLE_LIST.pop(row)
 
+        self.load_collectibles()
+
+    def show_new_type_dialog(self):
+        text, ok = QInputDialog.getText(self, "Adding New Type", "Enter type:")
+        if ok and text:
+            self.ui.cmb_type.addItem(text)
+            self.ui.cmb_typedisplay.addItem(text)
 
 app = QApplication(sys.argv)
 w = AppWindow()
