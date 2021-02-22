@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Vintage Tech Shop</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="groupBox_2">
@@ -26,7 +26,7 @@
     <property name="title">
      <string>All Collectibles</string>
     </property>
-    <widget class="QTableWidget" name="tableWidget">
+    <widget class="QTableWidget" name="tbl_show">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -34,6 +34,18 @@
        <width>581</width>
        <height>171</height>
       </rect>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DashLine</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QWidget" name="horizontalLayoutWidget_2">
@@ -202,7 +214,7 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QTextEdit" name="textEdit"/>
+          <widget class="QTextEdit" name="txt_desc"/>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="lbl_dateman">
@@ -229,7 +241,7 @@
            <item>
             <widget class="QPushButton" name="btn_newtype">
              <property name="text">
-              <string>New Type</string>
+              <string>Add New Type</string>
              </property>
             </widget>
            </item>
@@ -248,10 +260,10 @@
   <tabstop>cmb_type</tabstop>
   <tabstop>btn_newtype</tabstop>
   <tabstop>date_dateman</tabstop>
-  <tabstop>textEdit</tabstop>
+  <tabstop>txt_desc</tabstop>
   <tabstop>btn_add</tabstop>
   <tabstop>btn_clear</tabstop>
-  <tabstop>tableWidget</tabstop>
+  <tabstop>tbl_show</tabstop>
   <tabstop>btn_delete</tabstop>
  </tabstops>
  <resources/>
