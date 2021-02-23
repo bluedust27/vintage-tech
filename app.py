@@ -22,13 +22,13 @@ class AppWindow(QMainWindow):
         self.ui.lbl_datenow.setText(QDate.currentDate().toString('dd/MM/yyyy'))
         self.ui.date_dateman.setDate(QDate.currentDate())
         Collectible.populate_type()
-        self.ui.cmb_type.addItems(Collectible.TYPE_LIST)
         self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST)
+        self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
 
         self.ui.tbl_show.setColumnCount(5)
-        self.ui.tbl_show.setHorizontalHeaderLabels(("Sr. No.", "Name", "Manufactured Date", "Added On", "Description"))
+        self.ui.tbl_show.setHorizontalHeaderLabels(("Name", "Type", "Manufactured Date", "Added On", "Description"))
         self.ui.tbl_show.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
+        self.load_collectibles()
         self.ui.btn_clear.clicked.connect(self.clear_form)
         self.ui.btn_add.clicked.connect(self.add_collectible)
         self.ui.btn_delete.clicked.connect(self.delete_collectible)
@@ -47,17 +47,23 @@ class AppWindow(QMainWindow):
         description = self.ui.txt_desc.toPlainText()
 
         Collectible(name, c_type, date_manufactured, date_added, description)
+        Collectible.save_to_file()
         self.load_collectibles()
         self.clear_form()
 
     def load_collectibles(self):
         for i in reversed(range(self.ui.tbl_show.rowCount())):
             self.ui.tbl_show.removeRow(i)
-
+        Collectible.load_from_file()
         row_pos = 0
         for c in Collectible.COLLECTIBLE_LIST:
             self.ui.tbl_show.insertRow(row_pos)
-            self.ui.tbl_show.setItem(row_pos, 1, QTableWidgetItem(c.name))
+            self.ui.tbl_show.setItem(row_pos, 0, QTableWidgetItem(c.name))
+            self.ui.tbl_show.setItem(row_pos, 1, QTableWidgetItem(c.type))
+            self.ui.tbl_show.setItem(row_pos, 2, QTableWidgetItem(c.date_manufactured))
+            self.ui.tbl_show.setItem(row_pos, 3, QTableWidgetItem(c.date_added))
+            self.ui.tbl_show.setItem(row_pos, 4, QTableWidgetItem(c.description))
+
             row_pos += 1
 
     def delete_collectible(self):
@@ -66,13 +72,22 @@ class AppWindow(QMainWindow):
         for row in rows:
             Collectible.COLLECTIBLE_LIST.pop(row)
 
+        Collectible.save_to_file()
+        Collectible.populate_type()
+        self.ui.cmb_typedisplay.clear()
+        self.ui.cmb_type.clear()
+        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST)
+        self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
         self.load_collectibles()
 
     def show_new_type_dialog(self):
         text, ok = QInputDialog.getText(self, "Adding New Type", "Enter type:")
         if ok and text:
-            self.ui.cmb_type.addItem(text)
-            self.ui.cmb_typedisplay.addItem(text)
+            if text not in Collectible.TYPE_LIST:
+                Collectible.TYPE_LIST.append(text)
+                self.ui.cmb_type.addItem(text)
+                self.ui.cmb_typedisplay.addItem(text)
+
 
 app = QApplication(sys.argv)
 w = AppWindow()
