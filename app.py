@@ -3,12 +3,10 @@ from datetime import date
 
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
-from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QInputDialog, QMessageBox
 from Souvenir import Collectible
+from validations import Validation
 
-
-# todo: load types from json
-#
 
 class AppWindow(QMainWindow):
     def __init__(self):
@@ -40,6 +38,16 @@ class AppWindow(QMainWindow):
         self.ui.txt_desc.clear()
 
     def add_collectible(self):
+        v = Validation(self.ui)
+        if not v.validate_input():
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText(Validation.ERROR_MESSAGE)
+            msg.setWindowTitle("Error in Entry")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+            Validation.ERROR_MESSAGE = ""
+            return
         name = self.ui.txt_name.text()
         c_type = self.ui.cmb_type.currentText()
         date_manufactured = self.ui.date_dateman.date().toPyDate()
@@ -82,11 +90,16 @@ class AppWindow(QMainWindow):
 
     def show_new_type_dialog(self):
         text, ok = QInputDialog.getText(self, "Adding New Type", "Enter type:")
+
         if ok and text:
-            if text not in Collectible.TYPE_LIST:
+            is_target_in_list = text in (string.lower() for string in Collectible.TYPE_LIST)
+            # TODO: check for capital strings
+            if not is_target_in_list:
+                text = text.capitalize()
                 Collectible.TYPE_LIST.append(text)
                 self.ui.cmb_type.addItem(text)
                 self.ui.cmb_typedisplay.addItem(text)
+                self.ui.cmb_type.setCurrentText(text)
 
 
 app = QApplication(sys.argv)
