@@ -32,6 +32,6 @@ class Validation:
     def __validate_manufactured_date(self):
         is_valid = True
         if self.ui.date_dateman.date().toPyDate() > date.today():
-            Validation.ERROR_MESSAGE += "Enter Valid Manufacturing Date"
+            Validation.ERROR_MESSAGE += "Enter Valid Manufactured Date"
             is_valid = False
         return is_valid
