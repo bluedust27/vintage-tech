@@ -9,12 +9,13 @@ import jsonpickle
 class Collectible:
     COLLECTIBLE_LIST: List[Collectible] = []
     TYPE_LIST: List[str] = []
+    TYPE_LIST_DISPLAY: List[str] = []
 
     def __init__(self, name, c_type, date_manufactured, date_added, description):
         self.name: str = name
         self.type: str = c_type
-        self.date_manufactured: datetime = date_manufactured
-        self.date_added: datetime = date_added
+        self.date_manufactured: datetime.date = date_manufactured
+        self.date_added: datetime.date = date_added
         self.description: str = description
         Collectible.COLLECTIBLE_LIST.append(self)
 
@@ -49,3 +50,12 @@ class Collectible:
                             item["date_manufactured"],
                             item["date_added"],
                             item["description"])
+
+    @staticmethod
+    def populate_typelist_display():
+        Collectible.TYPE_LIST_DISPLAY.clear()
+        Collectible.TYPE_LIST_DISPLAY.append("All")
+        Collectible.load_from_file()
+        for c in Collectible.COLLECTIBLE_LIST:
+            if c.type not in Collectible.TYPE_LIST_DISPLAY:
+                Collectible.TYPE_LIST_DISPLAY.append(c.type)

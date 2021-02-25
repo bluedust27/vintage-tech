@@ -14,12 +14,14 @@ class AppWindow(QMainWindow):
         self.ui = uic.loadUi("mainwindow.ui", self)
         self.build_ui()
         self.show()
+        # todo: non resizeable
         self._error_message = ""
 
     def build_ui(self):
         self.ui.date_dateman.setDate(QDate.currentDate())
         Collectible.populate_typelist()
-        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST)
+        Collectible.populate_typelist_display()
+        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST_DISPLAY)
         self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
 
         self.ui.tbl_show.setColumnCount(5)
@@ -53,6 +55,7 @@ class AppWindow(QMainWindow):
         name = self.ui.txt_name.text()
         c_type = self.ui.cmb_type.currentText()
         date_manufactured = self.ui.date_dateman.date().toPyDate()
+        # todo: convert to dd-mm-yyyy
         date_added = date.today()
         description = self.ui.txt_desc.toPlainText()
 
@@ -84,11 +87,14 @@ class AppWindow(QMainWindow):
 
         Collectible.save_to_file()
         Collectible.populate_typelist()
+        Collectible.populate_typelist_display()
         self.ui.cmb_typedisplay.clear()
         self.ui.cmb_type.clear()
-        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST)
+        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST_DISPLAY)
         self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
         self.load_collectibles("All")
+        # todo: ask message before deleting
+        # todo: validate if no row selected
 
     def show_new_type_dialog(self):
         text, ok = QInputDialog.getText(self, "Adding New Type", "Enter type:")
@@ -108,6 +114,8 @@ class AppWindow(QMainWindow):
         v = QMessageBox()
         v.setText(selected_row)
         v.exec_()
+
+
 app = QApplication(sys.argv)
 w = AppWindow()
 w.show()
