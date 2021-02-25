@@ -19,7 +19,7 @@ class Collectible:
         Collectible.COLLECTIBLE_LIST.append(self)
 
     @staticmethod
-    def populate_type():
+    def populate_typelist():
         Collectible.TYPE_LIST.clear()
         Collectible.TYPE_LIST.extend(("All", "Computer", "Camera", "Phone", "Video Player"))
         Collectible.load_from_file()

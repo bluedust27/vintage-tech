@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>All Collectibles</string>
+     <string>Display Collectibles</string>
     </property>
     <widget class="QTableWidget" name="tbl_show">
      <property name="geometry">
@@ -34,6 +34,14 @@
        <width>581</width>
        <height>171</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Book Antiqua</family>
+      </font>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed</set>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
@@ -70,6 +78,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_edit">
+        <property name="text">
+         <string>Edit</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btn_delete">
@@ -119,9 +134,9 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>10</y>
-      <width>601</width>
+      <width>621</width>
       <height>271</height>
      </rect>
     </property>
@@ -150,67 +165,7 @@
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="6" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QPushButton" name="btn_add">
-             <property name="text">
-              <string>ADD</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btn_clear">
-             <property name="text">
-              <string>CLEAR</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbl_name">
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>Name</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lbl_type">
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>Type</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_name"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lbl_dateadded">
-           <property name="text">
-            <string>Added On</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QDateEdit" name="date_dateman"/>
-         </item>
-         <item row="4" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="lbl_desc">
            <property name="text">
             <string>Description</string>
@@ -220,23 +175,13 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QTextEdit" name="txt_desc"/>
-         </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="lbl_dateman">
            <property name="text">
             <string>Manufactured Date</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="lbl_datenow">
-           <property name="text">
-            <string>TextLabel</string>
            </property>
           </widget>
          </item>
@@ -257,6 +202,59 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item row="5" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QPushButton" name="btn_add">
+             <property name="text">
+              <string>ADD</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_clear">
+             <property name="text">
+              <string>CLEAR</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lbl_type">
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>Type</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbl_name">
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="text">
+            <string>Name</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txt_name"/>
+         </item>
+         <item row="3" column="1">
+          <widget class="QTextEdit" name="txt_desc"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDateEdit" name="date_dateman"/>
          </item>
         </layout>
        </widget>
