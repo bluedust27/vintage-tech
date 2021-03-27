@@ -47,8 +47,8 @@ class Collectible:
             for item in list_of_dict:
                 Collectible(item["name"],
                             item["type"],
-                            item["date_manufactured"],
-                            item["date_added"],
+                            datetime.datetime.strptime(item['date_manufactured'], '%Y-%m-%d').date(),
+                            datetime.datetime.strptime(item['date_added'], '%Y-%m-%d').date(),
                             item["description"])
 
     @staticmethod
