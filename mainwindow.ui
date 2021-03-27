@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>621</width>
-    <height>652</height>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>290</y>
       <width>611</width>
-      <height>351</height>
+      <height>361</height>
      </rect>
     </property>
     <property name="title">
@@ -62,7 +62,7 @@
         </font>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
+        <set>QAbstractItemView::DoubleClicked</set>
        </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::SingleSelection</enum>
@@ -78,8 +78,22 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="4" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="btn_edit">
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_delete">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
@@ -94,16 +108,9 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_edit">
+        <widget class="QPushButton" name="btn_exit">
          <property name="text">
-          <string>Edit</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btn_delete">
-         <property name="text">
-          <string>Delete</string>
+          <string>Exit</string>
          </property>
         </widget>
        </item>
@@ -253,7 +260,6 @@
   <tabstop>btn_add</tabstop>
   <tabstop>btn_clear</tabstop>
   <tabstop>tbl_show</tabstop>
-  <tabstop>btn_delete</tabstop>
  </tabstops>
  <resources/>
  <connections/>

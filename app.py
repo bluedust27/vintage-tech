@@ -1,20 +1,22 @@
 import sys
-from datetime import date
+from datetime import date, datetime
 
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QInputDialog, QMessageBox
+from PyQt5.uic.properties import QtWidgets, QtGui
+
 from Souvenir import Collectible
 from validations import Validation
 
 
-class AppWindow(QMainWindow):
+class Vintage_Tech_GUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = uic.loadUi("mainwindow.ui", self)
         self.build_ui()
         self.show()
-        # todo: non resizeable
+        self.setFixedSize(620, 650)
         self._error_message = ""
 
     def build_ui(self):
@@ -32,14 +34,16 @@ class AppWindow(QMainWindow):
         self.ui.btn_add.clicked.connect(self.add_collectible)
         self.ui.btn_delete.clicked.connect(self.delete_collectible)
         self.ui.btn_newtype.clicked.connect(self.show_new_type_dialog)
+        self.ui.btn_newtype.setToolTip("Add a new type")
         self.ui.btn_edit.clicked.connect(self.edit_collectible)
         self.ui.cmb_typedisplay.currentTextChanged.connect(self.load_collectibles)
+        self.ui.btn_exit.clicked.connect(self.close)
 
     def clear_form(self):
         self.ui.txt_name.clear()
         self.ui.date_dateman.setDate(QDate.currentDate())
         self.ui.txt_desc.clear()
-        # todo: reset typecombobox
+        self.ui.cmb_type.setCurrentIndex(0)
 
     def add_collectible(self):
         v = Validation(self.ui)
@@ -55,7 +59,6 @@ class AppWindow(QMainWindow):
         name = self.ui.txt_name.text()
         c_type = self.ui.cmb_type.currentText()
         date_manufactured = self.ui.date_dateman.date().toPyDate()
-        # todo: convert to dd-mm-yyyy
         date_added = date.today()
         description = self.ui.txt_desc.toPlainText()
 
@@ -74,13 +77,33 @@ class AppWindow(QMainWindow):
                 self.ui.tbl_show.insertRow(row_pos)
                 self.ui.tbl_show.setItem(row_pos, 0, QTableWidgetItem(c.name))
                 self.ui.tbl_show.setItem(row_pos, 1, QTableWidgetItem(c.type))
-                self.ui.tbl_show.setItem(row_pos, 2, QTableWidgetItem(c.date_manufactured))
-                self.ui.tbl_show.setItem(row_pos, 3, QTableWidgetItem(c.date_added))
+                self.ui.tbl_show.setItem(row_pos, 2, QTableWidgetItem(c.date_manufactured.strftime("%d/%m/%Y")))
+                self.ui.tbl_show.setItem(row_pos, 3, QTableWidgetItem(c.date_added.strftime("%d/%m/%Y")))
                 self.ui.tbl_show.setItem(row_pos, 4, QTableWidgetItem(c.description))
                 row_pos += 1
 
     def delete_collectible(self):
         rows = sorted(set(index.row() for index in self.ui.tbl_show.selectedIndexes()))
+
+        if len(rows) < 1:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Please choose an item to delete.")
+            msg.setWindowTitle("No Item Selected")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
+            return
+
+        ask = QMessageBox()
+        ask.setIcon(QMessageBox.Question)
+        ask.setText("Are you sure you want to delete this item?")
+        ask.setWindowTitle("Delete")
+        ask.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        ask.activateWindow()
+        ret_val = ask.exec_()
+
+        if ret_val == QMessageBox.No:
+            return
 
         for row in rows:
             Collectible.COLLECTIBLE_LIST.pop(row)
@@ -93,30 +116,40 @@ class AppWindow(QMainWindow):
         self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST_DISPLAY)
         self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
         self.load_collectibles("All")
-        # todo: ask message before deleting
-        # todo: validate if no row selected
+
 
     def show_new_type_dialog(self):
-        text, ok = QInputDialog.getText(self, "Adding New Type", "Enter type:")
+        new_type, ok = QInputDialog.getText(self, "New Type", "Enter new type:")
 
-        if ok and text:
-            is_target_in_list = text.lower() in (c.lower() for c in Collectible.TYPE_LIST)
-            # TODO: send message for duplicates
+        if ok and new_type:
+            is_target_in_list = new_type.lower() in (c.lower() for c in Collectible.TYPE_LIST)
+
+            if is_target_in_list:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText("Type: {0} already exists!".format(new_type.capitalize()))
+                msg.setWindowTitle("Duplicate item")
+                msg.setStandardButtons(QMessageBox.Ok)
+                msg.exec_()
+                return
+
             if not is_target_in_list:
-                text = text.capitalize()
-                Collectible.TYPE_LIST.append(text)
-                self.ui.cmb_type.addItem(text)
-                self.ui.cmb_typedisplay.addItem(text)
-                self.ui.cmb_type.setCurrentText(text)
+                new_type = new_type.capitalize()
+                Collectible.TYPE_LIST.append(new_type)
+                self.ui.cmb_type.addItem(new_type)
+                self.ui.cmb_typedisplay.addItem(new_type)
+                self.ui.cmb_type.setCurrentText(new_type)
 
     def edit_collectible(self):
         selected_row = str(self.ui.tbl_show.currentIndex().row())
         v = QMessageBox()
         v.setText(selected_row)
         v.exec_()
+        self.ui.tbl_show.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        # todo: logic for edit button
 
 
 app = QApplication(sys.argv)
-w = AppWindow()
-w.show()
+gui = Vintage_Tech_GUI()
+gui.show()
 sys.exit(app.exec_())
