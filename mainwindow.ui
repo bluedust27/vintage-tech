@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>621</width>
+    <width>927</width>
     <height>661</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>290</y>
-      <width>611</width>
+      <width>901</width>
       <height>361</height>
      </rect>
     </property>
@@ -64,6 +64,9 @@
        <property name="editTriggers">
         <set>QAbstractItemView::DoubleClicked</set>
        </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
        <property name="selectionMode">
         <enum>QAbstractItemView::SingleSelection</enum>
        </property>
@@ -71,7 +74,7 @@
         <enum>QAbstractItemView::SelectRows</enum>
        </property>
        <property name="gridStyle">
-        <enum>Qt::DashLine</enum>
+        <enum>Qt::DashDotLine</enum>
        </property>
        <property name="sortingEnabled">
         <bool>true</bool>
@@ -80,13 +83,6 @@
      </item>
      <item row="4" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QPushButton" name="btn_edit">
-         <property name="text">
-          <string>Edit</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="btn_delete">
          <property name="text">
@@ -121,9 +117,9 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>120</x>
       <y>10</y>
-      <width>621</width>
+      <width>681</width>
       <height>271</height>
      </rect>
     </property>
