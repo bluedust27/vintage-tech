@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import uuid
 from typing import List
 import datetime
 import jsonpickle
@@ -11,16 +12,18 @@ class Collectible:
     TYPE_LIST: List[str] = []
     TYPE_LIST_DISPLAY: List[str] = []
 
-    def __init__(self, name, c_type, date_manufactured, date_added, description):
+    def __init__(self, name, c_type, date_manufactured, date_added, description, uid):
+
         self.name: str = name
         self.type: str = c_type
         self.date_manufactured: datetime.date = date_manufactured
         self.date_added: datetime.date = date_added
         self.description: str = description
+        self.uid: uuid = uid
         Collectible.COLLECTIBLE_LIST.append(self)
 
     @staticmethod
-    def populate_typelist():
+    def populate_type_list():
         Collectible.TYPE_LIST.clear()
         Collectible.TYPE_LIST.extend(("All", "Computer", "Camera", "Phone", "Video Player"))
         Collectible.load_from_file()
@@ -49,10 +52,11 @@ class Collectible:
                             item["type"],
                             datetime.datetime.strptime(item['date_manufactured'], '%Y-%m-%d').date(),
                             datetime.datetime.strptime(item['date_added'], '%Y-%m-%d').date(),
-                            item["description"])
+                            item["description"],
+                            item["uid"])
 
     @staticmethod
-    def populate_typelist_display():
+    def populate_type_list_display():
         Collectible.TYPE_LIST_DISPLAY.clear()
         Collectible.TYPE_LIST_DISPLAY.append("All")
         Collectible.load_from_file()
