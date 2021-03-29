@@ -1,12 +1,13 @@
 import sys
 import uuid
 import datetime
-
+import simplejson
 from PyQt5 import uic
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QApplication, QMainWindow, QHeaderView, QTableWidgetItem, QInputDialog, QMessageBox
 
 from Souvenir import Collectible
+from utilities import Utilities
 from validations import Validation
 
 
@@ -41,12 +42,14 @@ class Vintage_Tech_GUI(QMainWindow):
         self.ui.tbl_show.itemChanged.connect(self.item_in_table_changed)
         self.ui.btn_exit.clicked.connect(self.close)
 
+    # Clear all data
     def clear_form(self):
         self.ui.txt_name.clear()
         self.ui.date_dateman.setDate(QDate.currentDate())
         self.ui.txt_desc.clear()
         self.ui.cmb_type.setCurrentIndex(0)
 
+    # Add a new item
     def add_collectible(self):
         v = Validation(self.ui)
         if not v.validate_input():
@@ -67,9 +70,15 @@ class Vintage_Tech_GUI(QMainWindow):
 
         Collectible(name, c_type, date_manufactured, date_added, description, uid)
         Collectible.save_to_file()
+
+        Collectible.populate_type_list_display()
+        self.ui.cmb_typedisplay.clear()
+        self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST_DISPLAY)
         self.load_collectibles("All")
+
         self.clear_form()
 
+    # Load all items in display list
     def load_collectibles(self, selected_type):
         for i in reversed(range(self.ui.tbl_show.rowCount())):
             self.ui.tbl_show.removeRow(i)
@@ -86,6 +95,7 @@ class Vintage_Tech_GUI(QMainWindow):
                 self.ui.tbl_show.setItem(row_pos, 5, QTableWidgetItem(c.uid))
                 row_pos += 1
 
+    # Delete an item
     def delete_collectible(self):
         rows = sorted(set(index.row() for index in self.ui.tbl_show.selectedIndexes()))
 
@@ -121,6 +131,7 @@ class Vintage_Tech_GUI(QMainWindow):
         self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
         self.load_collectibles("All")
 
+    # add a new type
     def show_new_type_dialog(self):
         new_type, ok = QInputDialog.getText(self, "New Type", "Enter new type:")
 
@@ -143,15 +154,11 @@ class Vintage_Tech_GUI(QMainWindow):
                 self.ui.cmb_typedisplay.addItem(new_type)
                 self.ui.cmb_type.setCurrentText(new_type)
 
+    # edit a item
     def item_in_table_changed(self, changed):
         # validate for blank values
         if not str(changed.text()).strip():
-            msg_blank = QMessageBox()
-            msg_blank.setIcon(QMessageBox.Critical)
-            msg_blank.setText("New value cannot be blank!")
-            msg_blank.setWindowTitle("Invalid Operation")
-            msg_blank.setStandardButtons(QMessageBox.Ok)
-            msg_blank.exec_()
+            Utilities.msg_box_blank_input()
             self.load_collectibles("All")
             return
 
@@ -164,49 +171,28 @@ class Vintage_Tech_GUI(QMainWindow):
 
         # validate UID
         if selected_column == 5:
-            msg_id = QMessageBox()
-            msg_id.setIcon(QMessageBox.Critical)
-            msg_id.setText("ID cannot be edited!")
-            msg_id.setWindowTitle("Invalid Operation")
-            msg_id.setStandardButtons(QMessageBox.Ok)
-            msg_id.exec_()
+            Utilities.msg_box_uid()
             self.load_collectibles("All")
             return
 
         # validate type
         if selected_column == 1:
-            is_type_valid = self.__validate_type(str(changed.text()).strip())
+            is_type_valid = Utilities.validate_type(str(changed.text()).strip())
             if not is_type_valid:
-                msg_type = QMessageBox()
-                msg_type.setIcon(QMessageBox.Critical)
-                msg_type.setText("This type is not valid. Add new type to proceed.")
-                msg_type.setWindowTitle("Invalid Operation")
-                msg_type.setStandardButtons(QMessageBox.Ok)
-                msg_type.exec_()
+                Utilities.msg_box_type()
                 self.load_collectibles("All")
                 return
 
-
         # Validate date format and future date
         if selected_column == 2 or selected_column == 3:
-            is_date_valid = self.__validate_date(str(changed.text()).strip())
+            is_date_valid = Utilities.validate_date(str(changed.text()).strip())
             if not is_date_valid:
-                msg_date = QMessageBox()
-                msg_date.setIcon(QMessageBox.Critical)
-                msg_date.setText("Wrong date format. Correct format (dd/mm/yyyy)")
-                msg_date.setWindowTitle("Invalid Operation")
-                msg_date.setStandardButtons(QMessageBox.Ok)
-                msg_date.exec_()
+                Utilities.msg_box_date_format()
                 self.load_collectibles("All")
                 return
 
             if datetime.datetime.strptime(str(changed.text()).strip(), "%d/%m/%Y").date() > datetime.date.today():
-                msg_date = QMessageBox()
-                msg_date.setIcon(QMessageBox.Critical)
-                msg_date.setText("Enter valid date")
-                msg_date.setWindowTitle("Invalid Operation")
-                msg_date.setStandardButtons(QMessageBox.Ok)
-                msg_date.exec_()
+                Utilities.msg_box_date_future()
                 self.load_collectibles("All")
                 return
 
@@ -224,7 +210,7 @@ class Vintage_Tech_GUI(QMainWindow):
         selected_id = self.ui.tbl_show.item(selected_row, 5).text()
         for idx, c in enumerate(Collectible.COLLECTIBLE_LIST):
             if c.uid == selected_id:
-                c = self.__replace_item(c, selected_column, changed)
+                c = Utilities.replace_item(c, selected_column, changed)
                 Collectible.COLLECTIBLE_LIST[idx] = c
                 break
         Collectible.save_to_file()
@@ -236,33 +222,7 @@ class Vintage_Tech_GUI(QMainWindow):
         self.ui.cmb_typedisplay.addItems(Collectible.TYPE_LIST_DISPLAY)
         self.ui.cmb_type.addItems(Collectible.TYPE_LIST[1:len(Collectible.TYPE_LIST)])
 
-
         self.load_collectibles("All")
-
-    def __validate_date(self, changed_date):
-        try:
-            datetime.datetime.strptime(changed_date, "%d/%m/%Y")
-            return True
-        except ValueError:
-            return False
-
-    def __validate_type(self, changed_type):
-        return changed_type.lower() in (c.lower() for c in Collectible.TYPE_LIST)
-
-    @staticmethod
-    def __replace_item(selected_item, selected_column, new_item):
-        if selected_column == 0:
-            selected_item.name = str(new_item.text()).strip()
-        elif selected_column == 1:
-            selected_item.type = str(new_item.text()).strip().capitalize()
-        elif selected_column == 2:
-            selected_item.date_manufactured = str(new_item.text()).strip()
-        elif selected_column == 3:
-            selected_item.date_added = str(new_item.text()).strip()
-        elif selected_column == 4:
-            selected_item.description = str(new_item.text()).strip().capitalize()
-
-        return selected_item
 
 
 app = QApplication(sys.argv)
