@@ -4,10 +4,11 @@
 collect old technology, like computers, cameras, phones etc. You will be building a small
 database program so the collector can record all the items in the collection.
 The collector must be able to:
-1. Add items to the collection.
-2. Show the items in the collection (by type).
-3. Delete items from the collection.
-When the program runs, it should display a menu with the options above, as well as an exit option.
+> 1. Add items to the collection.
+> 2. Show the items in the collection (by type).
+> 3. Delete items from the collection.
+
+>  When the program runs, it should display a menu with the options above, as well as an exit option.
 
 ## Technology Stack
 - Python 3.8
