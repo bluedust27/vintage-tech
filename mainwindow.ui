@@ -46,6 +46,13 @@
         </spacer>
        </item>
        <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Filter</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="cmb_typedisplay">
          <property name="sizeAdjustPolicy">
           <enum>QComboBox::AdjustToContents</enum>
@@ -86,7 +93,7 @@
        <item>
         <widget class="QPushButton" name="btn_delete">
          <property name="text">
-          <string>Delete</string>
+          <string>DELETE</string>
          </property>
         </widget>
        </item>
@@ -106,7 +113,7 @@
        <item>
         <widget class="QPushButton" name="btn_exit">
          <property name="text">
-          <string>Exit</string>
+          <string>EXIT</string>
          </property>
         </widget>
        </item>
